@@ -7,7 +7,12 @@
     <groupId>org.isomorphism</groupId>
     <artifactId>echo-sphere</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <!--
+        打包方式：pom就是针对root（一级工程）进行使用，并且当前的root（顶级pom）可以管理所有的jar包
+    -->
     <packaging>pom</packaging>
+
     <modules>
         <module>echo-sphere-common</module>
     </modules>
