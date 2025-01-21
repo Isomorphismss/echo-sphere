@@ -17,4 +17,14 @@
         <module>file-service-55</module>
     </modules>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>org.isomorphism</groupId>
+            <artifactId>echo-sphere-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
 </project>

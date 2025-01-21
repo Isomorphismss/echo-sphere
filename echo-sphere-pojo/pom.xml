@@ -11,4 +11,14 @@
 
     <artifactId>echo-sphere-pojo</artifactId>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>org.isomorphism</groupId>
+            <artifactId>echo-sphere-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
 </project>
