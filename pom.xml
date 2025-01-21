@@ -7,6 +7,10 @@
     <groupId>org.isomorphism</groupId>
     <artifactId>echo-sphere</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>echo-sphere-common</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
