@@ -18,6 +18,7 @@
         <module>echo-sphere-common</module>
         <module>echo-sphere-pojo</module>
         <module>api</module>
+        <module>gateway-1000</module>
     </modules>
 
     <properties>
