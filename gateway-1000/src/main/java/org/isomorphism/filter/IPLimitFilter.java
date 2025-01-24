@@ -6,6 +6,7 @@ import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.grace.result.ResponseStatusEnum;
 import org.isomorphism.utils.IPUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -31,9 +32,14 @@ public class IPLimitFilter extends BaseInfoProperties implements GlobalFilter, O
      * 等待30秒静默后，才能够继续恢复访问
      */
 
-    private static final Integer continueCounts = 3;
-    private static final Integer timeInterval = 20;
-    private static final Integer limitTimes = 30;
+    @Value("${blackIp.continueCounts}")
+    private Integer continueCounts;
+
+    @Value("${blackIp.timeInterval}")
+    private Integer timeInterval;
+
+    @Value("${blackIp.limitTimes}")
+    private Integer limitTimes;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
