@@ -13,9 +13,6 @@ public class SMSTask {
     @Resource
     private SMSUtils smsUtils;
 
-    @Resource
-    private SMSTask smsTask;
-
     @Async
     public void sendSMSInTask(String mobile, String code) throws Exception {
         smsUtils.sendSMS("12312312312", code);
