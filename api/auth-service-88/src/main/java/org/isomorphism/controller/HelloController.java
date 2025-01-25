@@ -1,7 +1,7 @@
 package org.isomorphism.controller;
 
 import jakarta.annotation.Resource;
-import org.isomorphism.SMSTask;
+import org.isomorphism.tasks.SMSTask;
 import org.isomorphism.utils.SMSUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
