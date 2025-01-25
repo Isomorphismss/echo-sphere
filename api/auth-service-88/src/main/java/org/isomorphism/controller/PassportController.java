@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.tasks.SMSTask;
+import org.isomorphism.utils.IPUtil;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,11 @@ public class PassportController extends BaseInfoProperties {
         if (StringUtils.isBlank(mobile)) {
             return GraceJSONResult.error();
         }
+
+        // 获得用户的手机号/
+        String userIp = IPUtil.getRequestIp(request);
+        // 限制该用户的手机号/ip在60秒内只能获得一次验证码
+        redis.setnx60s(MOBILE_SMSCODE + ":" + userIp, mobile);
 
         String code = (int) ((Math.random() * 9 + 1) * 100000) + "";
         System.out.println("验证码为：" + code);
