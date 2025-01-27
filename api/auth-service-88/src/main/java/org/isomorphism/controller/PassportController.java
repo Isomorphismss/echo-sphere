@@ -7,7 +7,7 @@ import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.tasks.SMSTask;
 import org.isomorphism.utils.IPUtil;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +21,7 @@ public class PassportController extends BaseInfoProperties {
     private SMSTask smsTask;
 
 
-    @GetMapping("getSMSCode")
+    @PostMapping("getSMSCode")
     public GraceJSONResult getSMSCode(String mobile,
                                       HttpServletRequest request) throws Exception {
         if (StringUtils.isBlank(mobile)) {
