@@ -1,5 +1,7 @@
 package org.isomorphism.service;
 
+import org.isomorphism.pojo.Users;
+
 /**
  * <p>
  * 用户表 服务类
@@ -10,6 +12,8 @@ package org.isomorphism.service;
  */
 public interface UsersService {
 
+    public Users queryMobileIfExist(String mobile);
 
+    public Users createUsers(String mobile);
 
 }
