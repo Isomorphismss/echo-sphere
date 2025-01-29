@@ -5,10 +5,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.grace.result.GraceJSONResult;
+import org.isomorphism.grace.result.ResponseStatusEnum;
+import org.isomorphism.pojo.Users;
 import org.isomorphism.pojo.bo.RegisterLoginBO;
+import org.isomorphism.service.UsersService;
 import org.isomorphism.tasks.SMSTask;
 import org.isomorphism.utils.IPUtil;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +25,8 @@ public class PassportController extends BaseInfoProperties {
     @Resource
     private SMSTask smsTask;
 
+    @Resource
+    private UsersService usersService;
 
     @PostMapping("getSMSCode")
     public GraceJSONResult getSMSCode(String mobile,
@@ -44,21 +50,34 @@ public class PassportController extends BaseInfoProperties {
     }
 
     @PostMapping("register")
-    public GraceJSONResult register(RegisterLoginBO registerLoginBO,
+    public GraceJSONResult register(@RequestBody RegisterLoginBO registerLoginBO,
                                     HttpServletRequest request) throws Exception {
         String mobile = registerLoginBO.getMobile();
         String code = registerLoginBO.getSmsCode();
 
         // 1. 从redis中获得验证码进行校验判断是否匹配
+        String redisCode = redis.get(MOBILE_SMSCODE + ":" + mobile);
+        System.out.println("电话号码：" + mobile);
+        System.out.println("数据库里的：" + redisCode);
+        System.out.println("前端的：" + code);
+        if (StringUtils.isBlank(redisCode) || !redisCode.equalsIgnoreCase(code)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.SMS_CODE_ERROR);
+        }
 
         // 2. 根据mobile查询数据库，如果用户存在，则提示不能重复注册
-        // 2.1 如果查询数据库中用户为空，则表示用户没有注册过，则需要进行用户信息数据的入库
+        Users user = usersService.queryMobileIfExist(mobile);
+        if (user == null) {
+            // 2.1 如果查询数据库中用户为空，则表示用户没有注册过，则需要进行用户信息数据的入库
+            user = usersService.createUsers(mobile);
+        } else {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.USER_ALREADY_EXIST_ERROR);
+        }
 
         // 3. 用户注册成功后，删除redis中的短信验证码使其失效
+        redis.del(MOBILE_SMSCODE + ":" + mobile);
 
         // 4. 返回用户数据给前端
-
-        return GraceJSONResult.ok();
+        return GraceJSONResult.ok(user);
     }
 
 }

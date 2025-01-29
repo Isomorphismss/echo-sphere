@@ -49,6 +49,11 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
         String uuidStr[] = uuid.split("-");
         String wechatNum = "wx" + uuidStr[0] + uuidStr[1];
         user.setWechatNum(wechatNum);
+        // FIXME
+        user.setWechatNumImg(USER_FACE1);
+
+        user.setNickname("123");
+        user.setRealName("");
 
         user.setSex(Sex.secret.type);
         user.setFace(USER_FACE1);
