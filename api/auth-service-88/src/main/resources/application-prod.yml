@@ -1,0 +1,10 @@
+server:
+  port: 8809
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_HOST}:${NACOS_PORT}
+        username: ${NACOS_USERNAME}
+        password: ${NACOS_PASSWORD}
