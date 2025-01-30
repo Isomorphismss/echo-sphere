@@ -2,6 +2,7 @@ package org.isomorphism.controller;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.grace.result.GraceJSONResult;
@@ -50,7 +51,7 @@ public class PassportController extends BaseInfoProperties {
     }
 
     @PostMapping("register")
-    public GraceJSONResult register(@RequestBody RegisterLoginBO registerLoginBO,
+    public GraceJSONResult register(@RequestBody @Valid RegisterLoginBO registerLoginBO,
                                     HttpServletRequest request) throws Exception {
         String mobile = registerLoginBO.getMobile();
         String code = registerLoginBO.getSmsCode();
@@ -79,7 +80,7 @@ public class PassportController extends BaseInfoProperties {
     }
 
     @PostMapping("login")
-    public GraceJSONResult login(@RequestBody RegisterLoginBO registerLoginBO,
+    public GraceJSONResult login(@RequestBody @Valid RegisterLoginBO registerLoginBO,
                                     HttpServletRequest request) throws Exception {
         String mobile = registerLoginBO.getMobile();
         String code = registerLoginBO.getSmsCode();
