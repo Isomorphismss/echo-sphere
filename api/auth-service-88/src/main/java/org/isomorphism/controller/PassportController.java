@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("passport")
 public class PassportController extends BaseInfoProperties {
@@ -75,7 +77,11 @@ public class PassportController extends BaseInfoProperties {
         // 3. 用户注册成功后，删除redis中的短信验证码使其失效
         redis.del(MOBILE_SMSCODE + ":" + mobile);
 
-        // 4. 返回用户数据给前端
+        // 4. 设置用户分布式会话，保存用户的token令牌，存储到redis中
+        String uToken = TOKEN_USER_PREFIX + SYMBOL_DOT + UUID.randomUUID();
+        redis.set(REDIS_USER_TOKEN + ":" + user.getId(), uToken);  // 设置分布式会话
+
+        // 5. 返回用户数据给前端
         return GraceJSONResult.ok(user);
     }
 
