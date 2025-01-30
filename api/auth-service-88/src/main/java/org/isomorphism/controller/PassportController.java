@@ -9,9 +9,11 @@ import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.grace.result.ResponseStatusEnum;
 import org.isomorphism.pojo.Users;
 import org.isomorphism.pojo.bo.RegisterLoginBO;
+import org.isomorphism.pojo.vo.UsersVO;
 import org.isomorphism.service.UsersService;
 import org.isomorphism.tasks.SMSTask;
 import org.isomorphism.utils.IPUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,7 +84,11 @@ public class PassportController extends BaseInfoProperties {
         redis.set(REDIS_USER_TOKEN + ":" + user.getId(), uToken);  // 设置分布式会话
 
         // 5. 返回用户数据给前端
-        return GraceJSONResult.ok(user);
+        UsersVO usersVO = new UsersVO();
+        BeanUtils.copyProperties(user, usersVO);
+        usersVO.setUserToken(uToken);
+
+        return GraceJSONResult.ok(usersVO);
     }
 
     @PostMapping("login")
@@ -107,8 +113,16 @@ public class PassportController extends BaseInfoProperties {
         // 3. 用户注册成功后，删除redis中的短信验证码使其失效
         redis.del(MOBILE_SMSCODE + ":" + mobile);
 
-        // 4. 返回用户数据给前端
-        return GraceJSONResult.ok(user);
+        // 4. 设置用户分布式会话，保存用户的token令牌，存储到redis中
+        String uToken = TOKEN_USER_PREFIX + SYMBOL_DOT + UUID.randomUUID();
+        redis.set(REDIS_USER_TOKEN + ":" + user.getId(), uToken);  // 设置分布式会话
+
+        // 5. 返回用户数据给前端
+        UsersVO usersVO = new UsersVO();
+        BeanUtils.copyProperties(user, usersVO);
+        usersVO.setUserToken(uToken);
+
+        return GraceJSONResult.ok(usersVO);
     }
 
 }
