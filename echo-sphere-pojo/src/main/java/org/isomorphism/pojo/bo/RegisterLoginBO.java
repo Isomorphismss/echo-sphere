@@ -15,4 +15,6 @@ public class RegisterLoginBO {
 
     private String smsCode;
 
+    private String nickname;
+
 }

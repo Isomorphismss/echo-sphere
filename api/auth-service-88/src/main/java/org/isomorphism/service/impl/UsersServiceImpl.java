@@ -2,11 +2,13 @@ package org.isomorphism.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.enums.Sex;
 import org.isomorphism.mapper.UsersMapper;
 import org.isomorphism.pojo.Users;
 import org.isomorphism.service.UsersService;
+import org.isomorphism.utils.DesensitizationUtil;
 import org.isomorphism.utils.LocalDateUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +43,7 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
 
     @Transactional
     @Override
-    public Users createUsers(String mobile) {
+    public Users createUsers(String mobile, String nickname) {
         Users user = new Users();
         user.setMobile(mobile);
 
@@ -52,7 +54,14 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
         // FIXME
         user.setWechatNumImg(USER_FACE1);
 
-        user.setNickname("123");
+        // 用户138****1234
+        if (nickname != null && StringUtils.isNotBlank(nickname)) {
+            user.setNickname(nickname);
+        } else {
+            nickname = DesensitizationUtil.commonDisplay(mobile);
+            user.setNickname(nickname);
+        }
+
         user.setRealName("");
 
         user.setSex(Sex.secret.type);
