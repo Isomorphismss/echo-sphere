@@ -21,7 +21,7 @@ public class TestFilter extends BaseInfoProperties implements GlobalFilter, Orde
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        log.info("TEST 当前的执行顺序order为0");
+        log.info("TEST 当前的执行顺序order为10");
 
         // 默认放行请求到后续的路由（服务）
         return chain.filter(exchange);
