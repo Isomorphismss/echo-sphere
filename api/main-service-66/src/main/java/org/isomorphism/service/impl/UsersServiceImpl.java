@@ -48,4 +48,9 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
 
     }
 
+    @Override
+    public Users getById(String userId) {
+        return usersMapper.selectById(userId);
+    }
+
 }

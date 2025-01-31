@@ -19,4 +19,11 @@ public interface UsersService {
      */
     public void modifyUserInfo(ModifyUserBO userBO);
 
+    /**
+     * 获得用户信息
+     * @param userId
+     * @return
+     */
+    public Users getById(String userId);
+
 }
