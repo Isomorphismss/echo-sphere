@@ -14,10 +14,7 @@ import org.isomorphism.service.UsersService;
 import org.isomorphism.tasks.SMSTask;
 import org.isomorphism.utils.IPUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -165,6 +162,14 @@ public class PassportController extends BaseInfoProperties {
         usersVO.setUserToken(uToken);
 
         return GraceJSONResult.ok(usersVO);
+    }
+
+    @PostMapping("logout")
+    public GraceJSONResult logout(@RequestParam String userId,
+                                  HttpServletRequest request) throws Exception {
+        // 清理用户的分布式会话
+        redis.del(REDIS_USER_TOKEN + ":" + userId);
+        return GraceJSONResult.ok();
     }
 
 }
