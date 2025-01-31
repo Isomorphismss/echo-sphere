@@ -36,7 +36,7 @@ public class SecurityFilterToken extends BaseInfoProperties implements GlobalFil
         // 2. 获得所有的需要排除校验的url list
         List<String> excludeList = excludeUrlProperties.getUrls();
 
-        // 3. 校验并且排除excludeList
+        // 3.1 校验并且排除excludeList
         if (excludeList != null && !excludeList.isEmpty()) {
             for (String excludeUrl : excludeList) {
                 if (antPathMatcher.matchStart(excludeUrl, url)) {
@@ -44,6 +44,14 @@ public class SecurityFilterToken extends BaseInfoProperties implements GlobalFil
                     return chain.filter(exchange);
                 }
             }
+        }
+
+        // 3.2 排除静态资源服务static
+        String fileStart = excludeUrlProperties.getFileStart();
+        if (StringUtils.isNotBlank(fileStart)) {
+            boolean matchFileStart = antPathMatcher.matchStart(fileStart, url);
+            if (matchFileStart) return chain.filter(exchange);
+
         }
 
         // 4. 代码到达此处，表示请求被拦截，需要进行校验
