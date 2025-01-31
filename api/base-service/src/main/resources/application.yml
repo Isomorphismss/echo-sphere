@@ -1,0 +1,3 @@
+image:
+  storage:
+    path: ${IMAGE_STORAGE_PATH}
