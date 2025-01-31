@@ -30,7 +30,7 @@ public class TestFilter extends BaseInfoProperties implements GlobalFilter, Orde
     // 过滤器的顺序，数字越小则优先级越大
     @Override
     public int getOrder() {
-        return 0;
+        return 10;
     }
 
 }
