@@ -5,6 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 @Component
 @Slf4j
@@ -16,16 +17,22 @@ public class ServiceLogAspect {
 
         // 需要统计每一个service实现的执行时间，如果执行时间太久，则进行error级别的日志输出
 
-        long begin = System.currentTimeMillis();
+//        long begin = System.currentTimeMillis();
+        StopWatch stopWatch = new StopWatch();
 
-        Object proceed = joinPoint.proceed();
         String pointName = joinPoint.getTarget().getClass().getName()
                 + "."
                 + joinPoint.getSignature().getName();
+        stopWatch.start("执行主业务: " + pointName);
+        Object proceed = joinPoint.proceed();
+        stopWatch.stop();
 
-        long end = System.currentTimeMillis();
-        long takeTimes = end - begin;
+//        log.info(stopWatch.prettyPrint());
 
+//        long end = System.currentTimeMillis();
+//        long takeTimes = end - begin;
+
+        long takeTimes = stopWatch.getTotalTimeMillis();
         if (takeTimes > 3000) {
             log.error("执行位置{}，执行时间太长了，耗费了{}毫秒", pointName, takeTimes);
         } else if (takeTimes > 2000) {
