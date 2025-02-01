@@ -5,8 +5,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.MinIOConfig;
 import org.isomorphism.MinIOUtils;
+import org.isomorphism.api.feign.UserInfoMicroServiceFeign;
 import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.grace.result.ResponseStatusEnum;
+import org.isomorphism.pojo.vo.UsersVO;
+import org.isomorphism.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,6 +52,9 @@ public class FileController {
     @Resource
     private MinIOConfig minIOConfig;
 
+    @Resource
+    private UserInfoMicroServiceFeign userInfoMicroServiceFeign;
+
     @PostMapping("uploadFace")
     public GraceJSONResult uploadFace(@RequestParam("file") MultipartFile file,
                                        String userId,
@@ -75,7 +81,18 @@ public class FileController {
                 + "/"
                 + filename;
 
-        return GraceJSONResult.ok(faceUrl);
+        /**
+         * 微服务远程调用更新用户头像到数据库 OpenFeign
+         * 如果前端没有保存按钮可以这么做，如果有保存提交按钮，则在前端可以触发
+         * 此处则不需要进行微服务调用，让前端触发保存提交到后台进行保存
+         */
+        GraceJSONResult jsonResult = userInfoMicroServiceFeign.updateFace(userId, faceUrl);
+        Object data = jsonResult.getData();
+
+        String json = JsonUtils.objectToJson(data);
+        UsersVO usersVO = JsonUtils.jsonToPojo(json, UsersVO.class);
+
+        return GraceJSONResult.ok(usersVO);
     }
 
 }
