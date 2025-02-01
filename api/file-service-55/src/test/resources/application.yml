@@ -1,0 +1,5 @@
+minio:
+  username: ${MINIO_USERNAME}
+  password: ${MINIO_PASSWORD}
+  url: ${MINIO_URL}
+  local-image-source: ${MINIO_LOCAL_IMAGE_SOURCE}
