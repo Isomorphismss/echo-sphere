@@ -12,3 +12,10 @@ spring:
 image:
   storage:
     path: ${IMAGE_STORAGE_PATH}
+
+minio:
+  accessKey: ${MINIO_USERNAME}
+  secretKey: ${MINIO_PASSWORD}
+  endpoint: ${MINIO_URL}
+  fileHost: ${MINIO_URL}
+  bucketName: ${MINIO_BUCKET_NAME}
