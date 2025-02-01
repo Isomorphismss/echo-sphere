@@ -12,6 +12,12 @@
     <artifactId>file-service-55</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.isomorphism</groupId>
+            <artifactId>base-service</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- minio相关依赖 -->
         <dependency>
             <groupId>io.minio</groupId>
