@@ -1,7 +1,12 @@
 package org.isomorphism.controller;
 
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
+import org.isomorphism.MinIOConfig;
+import org.isomorphism.MinIOUtils;
 import org.isomorphism.grace.result.GraceJSONResult;
+import org.isomorphism.grace.result.ResponseStatusEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,8 +23,8 @@ public class FileController {
 
     // 127.0.0.1:55/file/uploadFace?userId
 
-    @PostMapping("uploadFace")
-    public GraceJSONResult uploadFace(@RequestParam("file") MultipartFile file,
+    @PostMapping("uploadFace1")
+    public GraceJSONResult uploadFace1(@RequestParam("file") MultipartFile file,
                                       String userId,
                                       HttpServletRequest request) throws IOException {
 
@@ -39,6 +44,38 @@ public class FileController {
         file.transferTo(newFile);
 
         return GraceJSONResult.ok();
+    }
+
+    @Resource
+    private MinIOConfig minIOConfig;
+
+    @PostMapping("uploadFace")
+    public GraceJSONResult uploadFace(@RequestParam("file") MultipartFile file,
+                                       String userId,
+                                       HttpServletRequest request) throws Exception {
+
+        if (StringUtils.isBlank(userId)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        String filename = file.getOriginalFilename();   // 获得文件原始名称元始天尊
+        if (StringUtils.isBlank(filename)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        filename = "face" + "/" + userId + "/" + filename;
+        MinIOUtils.uploadFile(minIOConfig.getBucketName(),
+                filename,
+                file.getInputStream()
+        );
+
+        String faceUrl = minIOConfig.getFileHost()
+                + "/"
+                + minIOConfig.getBucketName()
+                + "/"
+                + filename;
+
+        return GraceJSONResult.ok(faceUrl);
     }
 
 }
