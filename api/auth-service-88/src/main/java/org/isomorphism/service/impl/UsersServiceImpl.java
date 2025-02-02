@@ -3,6 +3,7 @@ package org.isomorphism.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.isomorphism.api.feign.FileMicroServiceFeign;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.enums.Sex;
 import org.isomorphism.mapper.UsersMapper;
@@ -52,7 +53,8 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
         String wechatNum = "wx" + uuidStr[0] + uuidStr[1];
         user.setWechatNum(wechatNum);
         // FIXME
-        user.setWechatNumImg(USER_FACE1);
+        String wechatNumUrl = getQrCodeUrl(wechatNum, TEMP_STRING);
+        user.setWechatNumImg(wechatNumUrl);
 
         // 用户138****1234
         if (nickname != null && StringUtils.isNotBlank(nickname)) {
@@ -84,6 +86,17 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
         usersMapper.insert(user);
 
         return user;
+    }
+
+    @Resource
+    private FileMicroServiceFeign fileMicroServiceFeign;
+
+    private String getQrCodeUrl(String wechatNumber, String userId) {
+        try {
+            return fileMicroServiceFeign.generatorQrCode(wechatNumber, userId);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
