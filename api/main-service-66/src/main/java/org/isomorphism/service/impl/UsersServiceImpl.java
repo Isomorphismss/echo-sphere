@@ -2,6 +2,7 @@ package org.isomorphism.service.impl;
 
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.isomorphism.api.feign.FileMicroServiceFeign;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.exceptions.GraceException;
 import org.isomorphism.grace.result.ResponseStatusEnum;
@@ -45,6 +46,10 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
             String isExist = redis.get(REDIS_USER_ALREADY_UPDATE_WECHAT_NUM + ":" + userId);
             if (StringUtils.isNotBlank(isExist)) {
                 GraceException.display(ResponseStatusEnum.WECHAT_NUM_ALREADY_MODIFIED_ERROR);
+            } else {
+                // 修改微信二维码
+                String wechatNumUrl = getQrCodeUrl(wechatNum, userId);
+                pendingUser.setWechatNumImg(wechatNumUrl);
             }
         }
 
@@ -67,6 +72,17 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
     @Override
     public Users getById(String userId) {
         return usersMapper.selectById(userId);
+    }
+
+    @Resource
+    private FileMicroServiceFeign fileMicroServiceFeign;
+
+    private String getQrCodeUrl(String wechatNumber, String userId) {
+        try {
+            return fileMicroServiceFeign.generatorQrCode(wechatNumber, userId);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }
