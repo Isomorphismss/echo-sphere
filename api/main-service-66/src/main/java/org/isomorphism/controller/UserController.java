@@ -1,8 +1,11 @@
 package org.isomorphism.controller;
 
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.grace.result.GraceJSONResult;
+import org.isomorphism.grace.result.ResponseStatusEnum;
 import org.isomorphism.pojo.Users;
 import org.isomorphism.pojo.bo.ModifyUserBO;
 import org.isomorphism.pojo.vo.UsersVO;
@@ -107,6 +110,28 @@ public class UserController extends BaseInfoProperties {
         UsersVO usersVO = getUserInfo(userBO.getUserId(), true);
 
         return usersVO;
+    }
+
+    @PostMapping("queryFriend")
+    public GraceJSONResult queryFriend(String queryString,
+                                       HttpServletRequest request) {
+
+        if (StringUtils.isBlank(queryString)) {
+            return GraceJSONResult.error();
+        }
+
+        Users friend = userService.getByWechatNumberOrMobile(queryString);
+        if (friend == null) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.FRIEND_NOT_EXIST_ERROR);
+        }
+
+        // 判断，不能添加自己为好友
+        String myId = request.getHeader(HEADER_USER_ID);
+        if (myId.equals(friend.getId())) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.CAN_NOT_ADD_SELF_FRIEND_ERROR);
+        }
+
+        return GraceJSONResult.ok(friend);
     }
 
 }
