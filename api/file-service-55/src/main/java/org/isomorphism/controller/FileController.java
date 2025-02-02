@@ -10,12 +10,23 @@ import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.grace.result.ResponseStatusEnum;
 import org.isomorphism.pojo.vo.UsersVO;
 import org.isomorphism.utils.JsonUtils;
+import org.isomorphism.utils.QrCodeUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("file")
@@ -23,6 +34,9 @@ public class FileController {
 
     @Value("${image.storage.path}")
     private String rootPath;
+
+    @Value("${qr-code.filePath}")
+    private String qrCodePath;
 
     // 127.0.0.1:55/file/uploadFace?userId
 
@@ -93,6 +107,34 @@ public class FileController {
         UsersVO usersVO = JsonUtils.jsonToPojo(json, UsersVO.class);
 
         return GraceJSONResult.ok(usersVO);
+    }
+
+    @PostMapping("generatorQrCode")
+    public String generatorQrCode(String wechatNumber,
+                                  String userId) throws Exception {
+        // 构建map对象
+        Map<String, String> map = new HashMap<>();
+        map.put("wechatNumber", wechatNumber);
+        map.put("userId", userId);
+
+        // 把对象转换为json字符串，用于存储到二维码中
+        String data = JsonUtils.objectToJson(map);
+
+        // 生成二维码
+        BufferedImage qrCodeImage = QrCodeUtils.generateQRCodeImage(data, 300, 300);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(qrCodeImage, "png", baos);
+        byte[] qrCodeBytes = baos.toByteArray();
+
+        String uuid = UUID.randomUUID().toString();
+        String fileName = uuid + ".png";
+        MultipartFile multipartFile = new MockMultipartFile("file", fileName, "image/png", qrCodeBytes);
+
+        String objectName = "wechatNumber/" + userId + "/" + fileName;
+        String imageQrCodeUrl = MinIOUtils.uploadFile(minIOConfig.getBucketName(), objectName, multipartFile.getInputStream(), true);
+
+        return imageQrCodeUrl;
     }
 
 }
