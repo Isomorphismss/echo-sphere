@@ -19,3 +19,6 @@ minio:
   endpoint: ${MINIO_URL}
   fileHost: ${MINIO_URL}
   bucketName: ${MINIO_BUCKET_NAME}
+
+qr-code:
+  filePath: ${QRCODE_LOCAL_PATH}
