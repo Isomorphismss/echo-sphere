@@ -1,5 +1,6 @@
 package org.isomorphism.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.api.feign.FileMicroServiceFeign;
@@ -72,6 +73,18 @@ public class UsersServiceImpl extends BaseInfoProperties implements UsersService
     @Override
     public Users getById(String userId) {
         return usersMapper.selectById(userId);
+    }
+
+    @Override
+    public Users getByWechatNumberOrMobile(String queryString) {
+        QueryWrapper<Users> queryWrapper = new QueryWrapper<Users>()
+                .eq("wechat_num", queryString)
+                .or()
+                .eq("mobile", queryString);
+
+        Users friend = usersMapper.selectOne(queryWrapper);
+
+        return friend;
     }
 
     @Resource
