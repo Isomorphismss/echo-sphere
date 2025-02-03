@@ -1,10 +1,14 @@
 package org.isomorphism.base;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.isomorphism.utils.PagedGridResult;
 import org.isomorphism.utils.RedisOperator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 
 public class BaseInfoProperties {
@@ -170,25 +174,25 @@ public class BaseInfoProperties {
      * @param pageInfo
      * @return
      */
-//    public PagedGridResult setterPagedGridPlus(Page<?> pageInfo) {
-//
-//        //获取分页数据
-//        List<?> list = pageInfo.getRecords();
-//        // list.forEach(System.out::println);
-//        System.out.println("当前页：" + pageInfo.getCurrent());
-//        System.out.println("每页显示的条数：" + pageInfo.getSize());
-//        System.out.println("总记录数：" + pageInfo.getTotal());
-//        System.out.println("总页数：" + pageInfo.getPages());
-//        System.out.println("是否有上一页：" + pageInfo.hasPrevious());
-//        System.out.println("是否有下一页：" + pageInfo.hasNext());
-//
-//        PagedGridResult gridResult = new PagedGridResult();
-//        gridResult.setRows(list);
-//        gridResult.setPage(pageInfo.getCurrent());
-//        gridResult.setRecords(pageInfo.getTotal());
-//        gridResult.setTotal(pageInfo.getPages());
-//        return gridResult;
-//    }
+    public PagedGridResult setterPagedGridPlus(Page<?> pageInfo) {
+
+        //获取分页数据
+        List<?> list = pageInfo.getRecords();
+        // list.forEach(System.out::println);
+        System.out.println("当前页：" + pageInfo.getCurrent());
+        System.out.println("每页显示的条数：" + pageInfo.getSize());
+        System.out.println("总记录数：" + pageInfo.getTotal());
+        System.out.println("总页数：" + pageInfo.getPages());
+        System.out.println("是否有上一页：" + pageInfo.hasPrevious());
+        System.out.println("是否有下一页：" + pageInfo.hasNext());
+
+        PagedGridResult gridResult = new PagedGridResult();
+        gridResult.setRows(list);
+        gridResult.setPage(pageInfo.getCurrent());
+        gridResult.setRecords(pageInfo.getTotal());
+        gridResult.setTotal(pageInfo.getPages());
+        return gridResult;
+    }
 
     /**
      * 调用支付中心需要开通账号
