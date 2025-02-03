@@ -6,13 +6,21 @@
             parameterType="map"
             resultType="org.isomorphism.pojo.vo.NewFriendsVO">
         select
-            *
+            fr.id as friendRequestId,
+            u.id as myFriendId,
+            u.face as myFriendFace,
+            u.nickname as myFriendNickname,
+            fr.verify_message as verifyMessage,
+            fr.request_time as requestTime,
+            fr.verify_status as verifyStatus
         from
             friend_request fr
         left join
             users u
         on
             fr.my_id = u.id
+        where
+            fr.friend_id = #{paramMap.mySelfId}
         order by
             fr.request_time
         desc
