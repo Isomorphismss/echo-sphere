@@ -35,4 +35,10 @@ public class FriendRequestController extends BaseInfoProperties {
         return GraceJSONResult.ok(result);
     }
 
+    @PostMapping("pass")
+    public GraceJSONResult pass(String friendRequestId, String friendRemark) {
+        friendRequestService.passNewFriend(friendRequestId, friendRemark);
+        return GraceJSONResult.ok();
+    }
+
 }
