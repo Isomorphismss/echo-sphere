@@ -5,7 +5,6 @@ import java.util.List;
 /**
  * 
  * @Title: PagedGridResult.java
- * @Package com.Isomorphism.utils
  * @Description: 用来返回分页Grid的数据格式
  * Copyright: Copyright (c) 2021
  */
