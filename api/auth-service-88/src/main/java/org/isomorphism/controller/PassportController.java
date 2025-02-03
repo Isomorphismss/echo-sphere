@@ -40,7 +40,7 @@ public class PassportController extends BaseInfoProperties {
         // 获得用户的手机号/
         String userIp = IPUtil.getRequestIp(request);
         // 限制该用户的手机号/ip在60秒内只能获得一次验证码
-        redis.setnx60s(MOBILE_SMSCODE + ":" + userIp, mobile);
+        redis.setnx(MOBILE_SMSCODE + ":" + userIp, mobile, 10);
 
         String code = (int) ((Math.random() * 9 + 1) * 100000) + "";
         System.out.println("验证码为：" + code);
