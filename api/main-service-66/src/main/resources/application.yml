@@ -9,6 +9,14 @@ spring:
   profiles:
     active: dev  # dev：开发环境；prod：生产环境；test：测试环境；
 
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: assign_id
+      update-strategy: not_empty
+    banner: false
+  mapper-locations: classpath*:/mappers/*.xml
+
 # 日志级别
 logging:
   level:
