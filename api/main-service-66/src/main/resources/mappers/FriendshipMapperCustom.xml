@@ -23,6 +23,12 @@
             fs.friend_id = u.id
         where
             fs.my_id = #{paramMap.myId}
+        <if test="paramMap.needBlack">
+            and fs.is_black = 1
+        </if>
+        <if test="!paramMap.needBlack">
+            and fs.is_black = 0
+        </if>
     </select>
 
 </mapper>

@@ -31,7 +31,13 @@ public class FriendshipController extends BaseInfoProperties {
     @PostMapping("queryMyFriends")
     public GraceJSONResult queryMyFriends(HttpServletRequest request) {
         String myId = request.getHeader(HEADER_USER_ID);
-        return GraceJSONResult.ok(friendshipService.queryMyFriends(myId));
+        return GraceJSONResult.ok(friendshipService.queryMyFriends(myId, false));
+    }
+
+    @PostMapping("queryMyBlackList")
+    public GraceJSONResult queryMyBlackList(HttpServletRequest request) {
+        String myId = request.getHeader(HEADER_USER_ID);
+        return GraceJSONResult.ok(friendshipService.queryMyFriends(myId, true));
     }
 
     @PostMapping("updateFriendRemark")
