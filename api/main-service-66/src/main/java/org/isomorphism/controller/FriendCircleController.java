@@ -2,14 +2,13 @@ package org.isomorphism.controller;
 
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.pojo.bo.FriendCircleBO;
 import org.isomorphism.service.FriendCircleService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.isomorphism.utils.PagedGridResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +31,15 @@ public class FriendCircleController extends BaseInfoProperties {
         friendCircleService.publish(friendCircleBO);
 
         return GraceJSONResult.ok();
+    }
+
+    @PostMapping("queryList")
+    public GraceJSONResult queryList(String userId,
+                                     @RequestParam(defaultValue = "1") Integer page,
+                                     @RequestParam(defaultValue = "15") Integer pageSize) {
+        if (StringUtils.isBlank(userId)) return GraceJSONResult.error();
+        PagedGridResult gridResult = friendCircleService.queryList(userId, page, pageSize);
+        return GraceJSONResult.ok(gridResult);
     }
 
 }
