@@ -21,7 +21,7 @@ public interface FriendshipService {
      * @param myId
      * @return
      */
-    public List<ContactsVO> queryMyFriends(String myId);
+    public List<ContactsVO> queryMyFriends(String myId, boolean needBlack);
 
     /**
      * 修改我的好友的备注名
