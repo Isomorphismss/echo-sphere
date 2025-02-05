@@ -1,5 +1,6 @@
 package org.isomorphism.service;
 
+import org.isomorphism.enums.YesOrNo;
 import org.isomorphism.pojo.Friendship;
 import org.isomorphism.pojo.vo.ContactsVO;
 
@@ -31,5 +32,15 @@ public interface FriendshipService {
     public void updateFriendRemark(String myId,
                                    String friendId,
                                    String friendRemark);
+
+    /**
+     * 拉黑或者恢复好友
+     * @param myId
+     * @param friendId
+     * @param yesOrNo
+     */
+    public void updateBlackList(String myId,
+                                String friendId,
+                                YesOrNo yesOrNo);
 
 }

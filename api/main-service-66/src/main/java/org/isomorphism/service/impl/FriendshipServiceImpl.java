@@ -3,6 +3,7 @@ package org.isomorphism.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.isomorphism.base.BaseInfoProperties;
+import org.isomorphism.enums.YesOrNo;
 import org.isomorphism.mapper.FriendshipMapper;
 import org.isomorphism.mapper.FriendshipMapperCustom;
 import org.isomorphism.pojo.Friendship;
@@ -51,6 +52,22 @@ public class FriendshipServiceImpl extends BaseInfoProperties implements Friends
 
         Friendship friendship = new Friendship();
         friendship.setFriendRemark(friendRemark);
+        friendship.setUpdatedTime(LocalDateTime.now());
+
+        friendshipMapper.update(friendship, updateWrapper);
+    }
+
+    @Transactional
+    @Override
+    public void updateBlackList(String myId,
+                                String friendId,
+                                YesOrNo yesOrNo) {
+        QueryWrapper<Friendship> updateWrapper = new QueryWrapper<>();
+        updateWrapper.eq("my_id", myId);
+        updateWrapper.eq("friend_id", friendId);
+
+        Friendship friendship = new Friendship();
+        friendship.setIsBlack(yesOrNo.type);
         friendship.setUpdatedTime(LocalDateTime.now());
 
         friendshipMapper.update(friendship, updateWrapper);
