@@ -1,8 +1,11 @@
 package org.isomorphism.service;
 
+import org.isomorphism.pojo.FriendCircleLiked;
 import org.isomorphism.pojo.bo.FriendCircleBO;
 import org.isomorphism.utils.PagedGridResult;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 public interface FriendCircleService {
 
@@ -36,5 +39,12 @@ public interface FriendCircleService {
      * @param userId
      */
     public void unlike(String friendCircleId, String userId);
+
+    /**
+     * 查询朋友圈的点赞列表
+     * @param friendCircleId
+     * @return
+     */
+    public List<FriendCircleLiked> queryLikedFriends(String friendCircleId);
 
 }
