@@ -7,9 +7,12 @@ import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.pojo.FriendCircleLiked;
 import org.isomorphism.pojo.bo.FriendCircleBO;
+import org.isomorphism.pojo.vo.CommentVO;
 import org.isomorphism.pojo.vo.FriendCircleVO;
+import org.isomorphism.service.CommentService;
 import org.isomorphism.service.FriendCircleService;
 import org.isomorphism.utils.PagedGridResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,6 +24,9 @@ public class FriendCircleController extends BaseInfoProperties {
 
     @Resource
     private FriendCircleService friendCircleService;
+
+    @Resource
+    private CommentService commentService;
 
     @PostMapping("publish")
     public GraceJSONResult hello(@RequestBody  FriendCircleBO friendCircleBO,
@@ -52,6 +58,9 @@ public class FriendCircleController extends BaseInfoProperties {
 
             boolean res = friendCircleService.doILike(friendCircleId, userId);
             f.setDoILike(res);
+
+            List<CommentVO> commentList = commentService.queryAll(friendCircleId);
+            f.setCommentList(commentList);
         }
 
         return GraceJSONResult.ok(gridResult);
