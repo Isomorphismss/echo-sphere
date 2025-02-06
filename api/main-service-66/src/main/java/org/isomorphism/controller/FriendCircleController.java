@@ -5,12 +5,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.grace.result.GraceJSONResult;
+import org.isomorphism.pojo.FriendCircleLiked;
 import org.isomorphism.pojo.bo.FriendCircleBO;
+import org.isomorphism.pojo.vo.FriendCircleVO;
 import org.isomorphism.service.FriendCircleService;
 import org.isomorphism.utils.PagedGridResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("friendCircle")
@@ -38,7 +41,16 @@ public class FriendCircleController extends BaseInfoProperties {
                                      @RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "15") Integer pageSize) {
         if (StringUtils.isBlank(userId)) return GraceJSONResult.error();
+
         PagedGridResult gridResult = friendCircleService.queryList(userId, page, pageSize);
+
+        List<FriendCircleVO> list = (List<FriendCircleVO>) gridResult.getRows();
+        for (FriendCircleVO f : list) {
+            String friendCircleId = f.getFriendCircleId();
+            List<FriendCircleLiked> likedList = friendCircleService.queryLikedFriends(friendCircleId);
+            f.setLikedFriends(likedList);
+        }
+
         return GraceJSONResult.ok(gridResult);
     }
 
