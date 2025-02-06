@@ -3,6 +3,7 @@ package org.isomorphism.service.impl;
 import jakarta.annotation.Resource;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.mapper.CommentMapper;
+import org.isomorphism.mapper.CommentMapperCustom;
 import org.isomorphism.pojo.Comment;
 import org.isomorphism.pojo.Users;
 import org.isomorphism.pojo.bo.CommentBO;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class CommentServiceImpl extends BaseInfoProperties implements CommentService {
@@ -23,6 +27,9 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 
     @Resource
     private UsersService usersService;
+
+    @Resource
+    private CommentMapperCustom commentMapperCustom;
 
     @Transactional
     @Override
@@ -47,4 +54,14 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
 
         return commentVO;
     }
+
+    @Override
+    public List<CommentVO> queryAll(String friendCircleId) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("friendCircleId", friendCircleId);
+
+        return commentMapperCustom.queryFriendCircleComments(map);
+    }
+
 }

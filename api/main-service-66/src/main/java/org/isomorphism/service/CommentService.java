@@ -3,6 +3,8 @@ package org.isomorphism.service;
 import org.isomorphism.pojo.bo.CommentBO;
 import org.isomorphism.pojo.vo.CommentVO;
 
+import java.util.List;
+
 public interface CommentService {
 
     /**
@@ -10,5 +12,7 @@ public interface CommentService {
      * @param commentBO
      */
     public CommentVO createComment(CommentBO commentBO);
+
+    public List<CommentVO> queryAll(String friendCircleId);
 
 }
