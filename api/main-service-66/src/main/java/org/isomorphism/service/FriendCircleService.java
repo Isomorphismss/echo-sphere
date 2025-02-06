@@ -23,4 +23,18 @@ public interface FriendCircleService {
                                      Integer page,
                                      Integer pageSize);
 
+    /**
+     * 点赞朋友圈
+     * @param friendCircleId
+     * @param userId
+     */
+    public void like(String friendCircleId, String userId);
+
+    /**
+     * 取消（删除）点赞朋友圈
+     * @param friendCircleId
+     * @param userId
+     */
+    public void unlike(String friendCircleId, String userId);
+
 }
