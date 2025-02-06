@@ -42,4 +42,20 @@ public class FriendCircleController extends BaseInfoProperties {
         return GraceJSONResult.ok(gridResult);
     }
 
+    @PostMapping("like")
+    public GraceJSONResult like(String friendCircleId,
+                                HttpServletRequest request) {
+        String userId = request.getHeader(HEADER_USER_ID);
+        friendCircleService.like(friendCircleId, userId);
+        return GraceJSONResult.ok();
+    }
+
+    @PostMapping("unlike")
+    public GraceJSONResult unlike(String friendCircleId,
+                                  HttpServletRequest request) {
+        String userId = request.getHeader(HEADER_USER_ID);
+        friendCircleService.unlike(friendCircleId, userId);
+        return GraceJSONResult.ok();
+    }
+
 }
