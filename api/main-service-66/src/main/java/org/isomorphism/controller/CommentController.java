@@ -26,4 +26,9 @@ public class CommentController extends BaseInfoProperties {
         return GraceJSONResult.ok(commentVO);
     }
 
+    @PostMapping("query")
+    public GraceJSONResult query(String friendCircleId) {
+        return GraceJSONResult.ok(commentService.queryAll(friendCircleId));
+    }
+
 }
