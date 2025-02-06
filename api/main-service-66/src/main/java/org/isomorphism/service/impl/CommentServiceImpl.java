@@ -1,5 +1,6 @@
 package org.isomorphism.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.mapper.CommentMapper;
@@ -64,4 +65,16 @@ public class CommentServiceImpl extends BaseInfoProperties implements CommentSer
         return commentMapperCustom.queryFriendCircleComments(map);
     }
 
+    @Transactional
+    @Override
+    public void deleteComment(String commentUserId,
+                              String commentId,
+                              String friendCircleId) {
+        QueryWrapper<Comment> deleteWrapper = new QueryWrapper<>();
+        deleteWrapper.eq("id", commentId);
+        deleteWrapper.eq("comment_user_id", commentUserId);
+        deleteWrapper.eq("friend_circle_id", friendCircleId);
+
+        commentMapper.delete(deleteWrapper);
+    }
 }
