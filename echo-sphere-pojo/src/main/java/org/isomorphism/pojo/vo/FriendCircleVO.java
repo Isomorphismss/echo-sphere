@@ -32,7 +32,8 @@ public class FriendCircleVO implements Serializable {
 
     private LocalDateTime publishTime;
 
-    private List<FriendCircleLiked> likedFriends = new ArrayList<>();
+    private List<FriendCircleLiked> likedFriends;
+
     private List<Comment> commentList = new ArrayList<>();
 
 }
