@@ -90,4 +90,12 @@ public class FriendCircleController extends BaseInfoProperties {
         return GraceJSONResult.ok(likedList);
     }
 
+    @PostMapping("delete")
+    public GraceJSONResult delete(String friendCircleId,
+                                        HttpServletRequest request) {
+        String userId = request.getHeader(HEADER_USER_ID);
+        friendCircleService.delete(friendCircleId, userId);
+        return GraceJSONResult.ok();
+    }
+
 }

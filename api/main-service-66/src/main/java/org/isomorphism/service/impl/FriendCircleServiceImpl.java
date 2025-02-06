@@ -8,6 +8,7 @@ import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.mapper.FriendCircleLikedMapper;
 import org.isomorphism.mapper.FriendCircleMapper;
 import org.isomorphism.mapper.FriendCircleMapperCustom;
+import org.isomorphism.pojo.Comment;
 import org.isomorphism.pojo.FriendCircle;
 import org.isomorphism.pojo.FriendCircleLiked;
 import org.isomorphism.pojo.Users;
@@ -117,6 +118,17 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
     public boolean doILike(String friendCircleId, String userId) {
         String isExist = redis.get(REDIS_DOES_USER_LIKE_FRIEND_CIRCLE + ":" + friendCircleId + ":" + userId);
         return StringUtils.isNotBlank(isExist);
+    }
+
+    @Transactional
+    @Override
+    public void delete(String friendCircleId, String userId) {
+
+        QueryWrapper<FriendCircle> deleteWrapper = new QueryWrapper<>();
+        deleteWrapper.eq("id", friendCircleId);
+        deleteWrapper.eq("user_id", userId);
+
+        friendCircleMapper.delete(deleteWrapper);
     }
 
     private FriendCircle selectFriendCircle(String friendCircleId) {

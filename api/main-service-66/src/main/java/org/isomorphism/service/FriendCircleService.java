@@ -3,7 +3,6 @@ package org.isomorphism.service;
 import org.isomorphism.pojo.FriendCircleLiked;
 import org.isomorphism.pojo.bo.FriendCircleBO;
 import org.isomorphism.utils.PagedGridResult;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -54,5 +53,13 @@ public interface FriendCircleService {
      * @return
      */
     public boolean doILike(String friendCircleId, String userId);
+
+    /**
+     * 删除朋友圈图文数据
+     *
+     * @param friendCircleId
+     * @param userId
+     */
+    public void delete(String friendCircleId, String userId);
 
 }
