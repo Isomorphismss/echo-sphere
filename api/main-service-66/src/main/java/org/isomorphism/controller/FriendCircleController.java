@@ -73,4 +73,12 @@ public class FriendCircleController extends BaseInfoProperties {
         return GraceJSONResult.ok();
     }
 
+    @PostMapping("likedFriends")
+    public GraceJSONResult likedFriends(String friendCircleId,
+                                  HttpServletRequest request) {
+        List<FriendCircleLiked> likedList = friendCircleService.queryLikedFriends(friendCircleId);
+
+        return GraceJSONResult.ok(likedList);
+    }
+
 }
