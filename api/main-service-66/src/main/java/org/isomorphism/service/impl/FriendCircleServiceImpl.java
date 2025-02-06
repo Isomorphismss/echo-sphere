@@ -3,6 +3,7 @@ package org.isomorphism.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.base.BaseInfoProperties;
 import org.isomorphism.mapper.FriendCircleLikedMapper;
 import org.isomorphism.mapper.FriendCircleMapper;
@@ -110,6 +111,12 @@ public class FriendCircleServiceImpl extends BaseInfoProperties implements Frien
                 .eq("friend_circle_id", friendCircleId);
 
         return circleLikedMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public boolean doILike(String friendCircleId, String userId) {
+        String isExist = redis.get(REDIS_DOES_USER_LIKE_FRIEND_CIRCLE + ":" + friendCircleId + ":" + userId);
+        return StringUtils.isNotBlank(isExist);
     }
 
     private FriendCircle selectFriendCircle(String friendCircleId) {
