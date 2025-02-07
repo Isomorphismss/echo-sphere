@@ -21,24 +21,26 @@ public class HttpHandler extends SimpleChannelInboundHandler<HttpObject> {
         // 获取channel
         Channel channel = ctx.channel();
 
-        // 打印客户端的远程地址
-        System.out.println(channel.remoteAddress());
+        if (msg instanceof HttpRequest) {
+            // 打印客户端的远程地址
+            System.out.println(channel.remoteAddress());
 
-        // 通过缓冲区定义发送的消息，读写数据都是通过缓冲区进行数据交换的
-        ByteBuf content = Unpooled.copiedBuffer("hello netty", CharsetUtil.UTF_8);
+            // 通过缓冲区定义发送的消息，读写数据都是通过缓冲区进行数据交换的
+            ByteBuf content = Unpooled.copiedBuffer("hello netty", CharsetUtil.UTF_8);
 
-        // 构建http的response
-        FullHttpResponse response = new DefaultFullHttpResponse(
-                                                            HttpVersion.HTTP_1_1,
-                                                            HttpResponseStatus.OK,
-                                                            content);
+            // 构建http的response
+            FullHttpResponse response = new DefaultFullHttpResponse(
+                    HttpVersion.HTTP_1_1,
+                    HttpResponseStatus.OK,
+                    content);
 
-        // 为响应添加数据类型和数据长度
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
-        response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes());
+            // 为响应添加数据类型和数据长度
+            response.headers().set(HttpHeaderNames.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
+            response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes());
 
-        // 把响应数据写到缓冲区再刷到客户端
-        ctx.writeAndFlush(response);
+            // 把响应数据写到缓冲区再刷到客户端
+            ctx.writeAndFlush(response);
+        }
     }
 
 }
