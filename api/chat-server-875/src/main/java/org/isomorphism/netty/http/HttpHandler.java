@@ -1,4 +1,4 @@
-package org.isomorphism.netty;
+package org.isomorphism.netty.http;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
