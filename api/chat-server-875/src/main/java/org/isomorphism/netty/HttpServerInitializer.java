@@ -12,7 +12,6 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
-
         // 通过SocketChannel获得对应的管道
         ChannelPipeline pipeline = channel.pipeline();
 
@@ -22,10 +21,10 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
 
         // HttpServerCodec 是由netty自己提供的助手类，此处可以理解为管道中的拦截器
         // 当请求到服务端，我们需要进行做解码，响应到客户端做编码
-        pipeline.addLast("", new HttpServerCodec());
+        pipeline.addLast("HttpServerCodec", new HttpServerCodec());
 
         // 添加自定义的助手类，当请求访问，返回“hello netty”
-        pipeline.addLast("", null);
+        pipeline.addLast("HttpHandler", new HttpHandler());
     }
 
 }
