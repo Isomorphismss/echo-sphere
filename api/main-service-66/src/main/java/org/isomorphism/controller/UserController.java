@@ -44,7 +44,10 @@ public class UserController extends BaseInfoProperties {
 
         if (needToken) {
             String uToken = TOKEN_USER_PREFIX + SYMBOL_DOT + UUID.randomUUID();
-            redis.set(REDIS_USER_TOKEN + ":" + userId, uToken);
+            // 本方式只能限制用户在一台设备进行登录
+            // redis.set(REDIS_USER_TOKEN + ":" + user.getId(), uToken);  // 设置分布式会话
+            // 本方式允许用户在多端多设备进行登录
+            redis.set(REDIS_USER_TOKEN + ":" + uToken, userId);  // 设置分布式会话
             usersVO.setUserToken(uToken);
         }
 
