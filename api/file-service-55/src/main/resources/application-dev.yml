@@ -22,3 +22,7 @@ minio:
 
 qr-code:
   filePath: ${QRCODE_LOCAL_PATH}
+
+chat:
+  video:
+    file-path: ${CHAT_VIDEO_LOCAL_PATH}
