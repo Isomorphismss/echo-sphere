@@ -45,9 +45,17 @@ public class JcodecVideoUtil {
      * @param targetFile 截取帧的图片
      */
     public static void fetchFrame(MultipartFile videoFile, File targetFile) throws Exception {
-        File file = new File(videoFile.getName());
-        FileUtils.copyInputStreamToFile(videoFile.getInputStream(), file);
-        getFirstFrame(file, targetFile);
+        // 在系统临时目录创建临时视频文件
+        File tempVideoFile = File.createTempFile("video_", ".mp4");
+
+        // 复制视频内容到临时文件
+        FileUtils.copyInputStreamToFile(videoFile.getInputStream(), tempVideoFile);
+
+        // 处理第一帧
+        getFirstFrame(tempVideoFile, targetFile);
+
+        // 处理完后删除临时文件
+        tempVideoFile.delete();
     }
 
     /**
