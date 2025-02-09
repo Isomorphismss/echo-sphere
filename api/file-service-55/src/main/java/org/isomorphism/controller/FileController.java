@@ -226,6 +226,32 @@ public class FileController {
         return GraceJSONResult.ok(imageUrl);
     }
 
+    @PostMapping("uploadChatPhoto")
+    public GraceJSONResult uploadChatPhoto(@RequestParam("file") MultipartFile file,
+                                           String userId) throws Exception {
+
+        if (StringUtils.isBlank(userId)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        String filename = file.getOriginalFilename();   // 获得文件原始名称元始天尊
+        if (StringUtils.isBlank(filename)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        filename = "chat"
+                + "/" + userId
+                + "/" + "photo"
+                + "/" + dealWithoutFilename(filename);
+        String imageUrl = MinIOUtils.uploadFile(minIOConfig.getBucketName(),
+                filename,
+                file.getInputStream(),
+                true
+        );
+
+        return GraceJSONResult.ok(imageUrl);
+    }
+
     private String dealWithFilename(String filename) {
         String suffixName = filename.substring(filename.lastIndexOf("."));  // 从最后一个.开始截取
         String fName = filename.substring(0, filename.lastIndexOf("."));
