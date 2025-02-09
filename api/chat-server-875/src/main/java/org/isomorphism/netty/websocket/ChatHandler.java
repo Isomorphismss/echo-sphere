@@ -65,6 +65,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         } else if (msgType == MsgTypeEnum.WORDS.type
                 || msgType == MsgTypeEnum.IMAGE.type
                 || msgType == MsgTypeEnum.VIDEO.type
+                || msgType == MsgTypeEnum.VOICE.type
         ) {
             // 发送消息
             List<Channel> receiverChannels = UserChannelSession.getMultiChannels(receiverId);
@@ -78,6 +79,11 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
                 for (Channel c : receiverChannels) {
                     Channel findChannel = clients.find(c.id());
                     if (findChannel != null) {
+
+                        if (msgType == MsgTypeEnum.VOICE.type) {
+                            chatMsg.setIsRead(false);
+                        }
+
                         dataContent.setChatMsg(chatMsg);
                         String chatTimeFormat = LocalDateUtils
                                 .format(chatMsg.getChatTime(), LocalDateUtils.DATETIME_PATTERN_2);
