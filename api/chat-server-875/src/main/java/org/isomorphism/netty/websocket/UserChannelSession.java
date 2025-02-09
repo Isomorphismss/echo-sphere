@@ -58,6 +58,22 @@ public class UserChannelSession {
         multiSession.put(userId, channels);
     }
 
+    public static List<Channel> getMyOtherChannels(String userId, String channelId) {
+        List<Channel> channels = getMultiChannels(userId);
+        if (channels == null || channels.size() == 0) {
+            return null;
+        }
+
+        List<Channel> myOtherChannels = new ArrayList<>();
+        for (int i = 0; i < channels.size(); i++) {
+            Channel tempChannel = channels.get(i);
+            if (!tempChannel.id().asLongText().equals(channelId)) {
+                myOtherChannels.add(tempChannel);
+            }
+        }
+        return myOtherChannels;
+    }
+
     public static void outputMulti() {
         System.out.println("+++++++++++++++");
 
