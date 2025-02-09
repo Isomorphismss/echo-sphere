@@ -9,8 +9,11 @@ import org.isomorphism.api.feign.UserInfoMicroServiceFeign;
 import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.grace.result.ResponseStatusEnum;
 import org.isomorphism.pojo.vo.UsersVO;
+import org.isomorphism.pojo.vo.VideoMsgVO;
+import org.isomorphism.utils.JcodecVideoUtil;
 import org.isomorphism.utils.JsonUtils;
 import org.isomorphism.utils.QrCodeUtils;
+import org.jcodec.common.JCodecUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +26,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +41,9 @@ public class FileController {
 
     @Value("${qr-code.filePath}")
     private String qrCodePath;
+
+    @Value("${chat.video.file-path}")
+    private String chatVideoPath;
 
     // 127.0.0.1:55/file/uploadFace?userId
 
@@ -250,6 +257,56 @@ public class FileController {
         );
 
         return GraceJSONResult.ok(imageUrl);
+    }
+
+    @PostMapping("uploadChatVideo")
+    public GraceJSONResult uploadChatVideo(@RequestParam("file") MultipartFile file,
+                                           String userId) throws Exception {
+
+        if (StringUtils.isBlank(userId)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        String filename = file.getOriginalFilename();   // 获得文件原始名称元始天尊
+        if (StringUtils.isBlank(filename)) {
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        filename = "chat"
+                + "/" + userId
+                + "/" + "video"
+                + "/" + dealWithoutFilename(filename);
+
+        String videoUrl = MinIOUtils.uploadFile(minIOConfig.getBucketName(),
+                filename,
+                file.getInputStream(),
+                true
+        );
+
+        // 封面获取，视频截帧，截取第一帧
+        String coverName = UUID.randomUUID().toString() + ".jpg";   // 视频封面的名称
+        String coverPath = chatVideoPath
+                + File.separator + "videos"
+                + File.separator + coverName;
+
+        File coverFile = new File(coverPath);
+        if (!coverFile.getParentFile().exists()) {
+            coverFile.getParentFile().mkdirs();
+        }
+
+        JcodecVideoUtil.fetchFrame(file, coverFile);
+
+        // 上传封面到minio
+        String coverUrl = MinIOUtils.uploadFile(minIOConfig.getBucketName(),
+                coverName,
+                new FileInputStream(coverFile),
+                true
+        );
+        VideoMsgVO videoMsgVO = new VideoMsgVO();
+        videoMsgVO.setVideoPath(videoUrl);
+        videoMsgVO.setCover(coverUrl);
+
+        return GraceJSONResult.ok(videoMsgVO);
     }
 
     private String dealWithFilename(String filename) {
