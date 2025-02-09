@@ -26,3 +26,9 @@ qr-code:
 chat:
   video:
     file-path: ${CHAT_VIDEO_LOCAL_PATH}
+
+baidu:
+  speech-to-text:
+    app-id: ${BAIDU_SPEECH_TO_TEXT_APP_ID}
+    api-key: ${BAIDU_SPEECH_TO_TEXT_API_KEY}
+    secret-key: ${BAIDU_SPEECH_TO_TEXT_SECRET_KEY}
