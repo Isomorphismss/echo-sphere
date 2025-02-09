@@ -102,14 +102,4 @@ public class JcodecVideoUtil {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            long startTime = System.currentTimeMillis();
-            getFirstFrame(new File("/Users/lee/Pictures/universe-2.mp4"), new File(videoFramesPath + "/test.jpg"));
-            System.out.println("截取图片耗时：" + (System.currentTimeMillis() - startTime));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }
