@@ -64,6 +64,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
             UserChannelSession.putUserChannelIdRelation(currentChannelId, senderId);
         } else if (msgType == MsgTypeEnum.WORDS.type
                 || msgType == MsgTypeEnum.IMAGE.type
+                || msgType == MsgTypeEnum.VIDEO.type
         ) {
             // 发送消息
             List<Channel> receiverChannels = UserChannelSession.getMultiChannels(receiverId);
