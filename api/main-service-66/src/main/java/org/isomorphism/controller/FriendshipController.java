@@ -9,6 +9,7 @@ import org.isomorphism.enums.YesOrNo;
 import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.pojo.Friendship;
 import org.isomorphism.service.FriendshipService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,6 +91,23 @@ public class FriendshipController extends BaseInfoProperties {
         friendshipService.delete(myId, friendId);
 
         return GraceJSONResult.ok();
+    }
+
+    /**
+     * 判断两个朋友之间的关系是否拉黑呢
+     * @param friendId1st
+     * @param friendId2nd
+     * @return
+     */
+    @GetMapping("isBlack")
+    public GraceJSONResult isBlack(String friendId1st, String friendId2nd) {
+
+        // 需要进行两次查询，A拉黑B，B拉黑A，AB相互拉黑
+        // 只需要符合其中的一个条件，就表示双方发送消息不可送达
+        return GraceJSONResult.ok(
+                friendshipService.isBlackEachOther(
+                        friendId1st, friendId2nd)
+        );
     }
 
 }
