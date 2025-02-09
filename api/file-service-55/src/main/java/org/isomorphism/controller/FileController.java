@@ -290,6 +290,11 @@ public class FileController {
                 + File.separator + "videos"
                 + File.separator + coverName;
 
+        String minIoCoverName = "chat"
+                            + "/" + userId
+                            + "/" + "video"
+                            + "/" + coverName;
+
         File coverFile = new File(coverPath);
         if (!coverFile.getParentFile().exists()) {
             coverFile.getParentFile().mkdirs();
@@ -299,7 +304,7 @@ public class FileController {
 
         // 上传封面到minio
         String coverUrl = MinIOUtils.uploadFile(minIOConfig.getBucketName(),
-                coverName,
+                minIoCoverName,
                 new FileInputStream(coverFile),
                 true
         );
