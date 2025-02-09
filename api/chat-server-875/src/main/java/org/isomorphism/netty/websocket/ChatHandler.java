@@ -11,8 +11,10 @@ import org.isomorphism.enums.MsgTypeEnum;
 import org.isomorphism.pojo.netty.ChatMsg;
 import org.isomorphism.pojo.netty.DataContent;
 import org.isomorphism.utils.JsonUtils;
+import org.isomorphism.utils.LocalDateUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 创建自定义助手类
@@ -60,6 +62,31 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
             // 当websocket初次open的时候，初始化channel，把channel和用户userid关联起来
             UserChannelSession.putMultiChannels(senderId, currentChannel);
             UserChannelSession.putUserChannelIdRelation(currentChannelId, senderId);
+        } else if (msgType == MsgTypeEnum.WORDS.type) {
+            // 发送消息
+            List<Channel> receiverChannels = UserChannelSession.getMultiChannels(receiverId);
+            if (receiverChannels == null || receiverChannels.isEmpty()) {
+                // receiverChannels为空，表示用户离线/断线状态，消息不需要发送，后续可以存储到数据库
+                chatMsg.setIsReceiverOnLine(false);
+            } else {
+                chatMsg.setIsReceiverOnLine(true);
+
+                // 当receiverChannels不为空的时候，同账户多端设备接受消息
+                for (Channel c : receiverChannels) {
+                    Channel findChannel = clients.find(c.id());
+                    if (findChannel != null) {
+                        dataContent.setChatMsg(chatMsg);
+                        String chatTimeFormat = LocalDateUtils
+                                .format(chatMsg.getChatTime(), LocalDateUtils.DATETIME_PATTERN_2);
+                        dataContent.setChatTime(chatTimeFormat);
+                        // 发送消息给在线的用户
+                        findChannel.writeAndFlush(
+                                new TextWebSocketFrame(
+                                        JsonUtils.objectToJson(dataContent))
+                        );
+                    }
+                }
+            }
         }
 
         UserChannelSession.outputMulti();
