@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.isomorphism.MinIOConfig;
 import org.isomorphism.MinIOUtils;
 import org.isomorphism.api.feign.UserInfoMicroServiceFeign;
+import org.isomorphism.exceptions.GraceException;
 import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.grace.result.ResponseStatusEnum;
 import org.isomorphism.pojo.vo.UsersVO;
@@ -307,6 +308,39 @@ public class FileController {
         videoMsgVO.setCover(coverUrl);
 
         return GraceJSONResult.ok(videoMsgVO);
+    }
+
+    @PostMapping("uploadChatVoice")
+    public GraceJSONResult uploadChatVoice(@RequestParam("file") MultipartFile file,
+                                           String userId) throws Exception {
+
+        String voiceUrl = uploadForChatFiles(file, userId, "voice");
+        return GraceJSONResult.ok(voiceUrl);
+    }
+
+    private String uploadForChatFiles(MultipartFile file,
+                                      String userId,
+                                      String fileType) throws Exception {
+        if (StringUtils.isBlank(userId)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        String filename = file.getOriginalFilename();   // 获得文件原始名称元始天尊
+        if (StringUtils.isBlank(filename)) {
+            GraceException.display(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        filename = "chat"
+                + "/" + userId
+                + "/" + fileType
+                + "/" + dealWithoutFilename(filename);
+        String fileUrl = MinIOUtils.uploadFile(minIOConfig.getBucketName(),
+                filename,
+                file.getInputStream(),
+                true
+        );
+
+        return fileUrl;
     }
 
     private String dealWithFilename(String filename) {
