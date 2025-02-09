@@ -42,7 +42,7 @@ public class WSServerInitializer extends ChannelInitializer<SocketChannel> {
         // 如果是读空闲或者写空闲，不做任何处理
         pipeline.addLast(new IdleStateHandler(8,
                 10,
-                30 * 60)
+                300 * 60)
         );
 
         pipeline.addLast(new HeartBeatHandler());
