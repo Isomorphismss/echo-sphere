@@ -17,6 +17,9 @@ public class RabbitMQTestConfig {
     // 定义队列的名字
     public static final String TEST_QUEUE = "test_queue";
 
+    // 具体的路由地址
+    public static final String ROUTING_KEY_TEST_SEND = "echo.sphere.test.send";
+
     // 创建交换机
     @Bean(TEST_EXCHANGE)
     public Exchange exchange() {

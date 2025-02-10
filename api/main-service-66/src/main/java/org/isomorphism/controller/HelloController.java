@@ -32,7 +32,7 @@ public class HelloController {
 
         rabbitTemplate.convertAndSend(
                 RabbitMQTestConfig.TEST_EXCHANGE,
-                "echo.sphere.test.send",
+                RabbitMQTestConfig.ROUTING_KEY_TEST_SEND,
                 msg
         );
 
