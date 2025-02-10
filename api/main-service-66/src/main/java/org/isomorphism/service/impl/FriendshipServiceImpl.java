@@ -109,4 +109,5 @@ public class FriendshipServiceImpl extends BaseInfoProperties implements Friends
 
         return friendship1st != null || friendship2nd != null;
     }
+
 }
