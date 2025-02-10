@@ -21,7 +21,7 @@ public class RabbitMQTestConfig {
     @Bean(TEST_EXCHANGE)
     public Exchange exchange() {
         return ExchangeBuilder
-                .topicExchange("TEST_EXCHANGE")
+                .topicExchange(TEST_EXCHANGE)
                 .durable(true)
                 .build();
     }
