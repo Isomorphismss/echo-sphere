@@ -1,0 +1,44 @@
+package org.isomorphism.rabbitmq;
+
+import org.springframework.amqp.core.*;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * RabbitMQ的配置类
+ */
+@Configuration
+public class RabbitMQTestConfig {
+
+    // 定义交换机的名字
+    public static final String TEST_EXCHANGE = "test_exchange";
+
+    // 定义队列的名字
+    public static final String TEST_QUEUE = "test_queue";
+
+    // 创建交换机
+    @Bean(TEST_EXCHANGE)
+    public Exchange exchange() {
+        return ExchangeBuilder
+                .topicExchange("TEST_EXCHANGE")
+                .durable(true)
+                .build();
+    }
+
+    // 创建队列
+    @Bean(TEST_QUEUE)
+    public Queue queue() {
+        return QueueBuilder
+                .durable(TEST_QUEUE)
+                .build();
+    }
+
+    // 定义队列绑定到交换机的关系
+    @Bean
+    public Binding binding(@Qualifier(TEST_EXCHANGE) Exchange exchange,
+                           @Qualifier(TEST_QUEUE) Queue queue) {
+        return BindingBuilder.bind(queue).to(exchange).with("echo.sphere.#").noargs();  // 执行绑定关系
+    }
+
+}
