@@ -1,5 +1,8 @@
 package org.isomorphism.netty.websocket;
 
+import com.a3test.component.idworker.IdWorkerConfigBean;
+import com.a3test.component.idworker.Snowflake;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -9,6 +12,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.isomorphism.enums.MsgTypeEnum;
 import org.isomorphism.grace.result.GraceJSONResult;
+import org.isomorphism.netty.mq.MessagePublisher;
 import org.isomorphism.pojo.netty.ChatMsg;
 import org.isomorphism.pojo.netty.DataContent;
 import org.isomorphism.utils.JsonUtils;
@@ -80,6 +84,18 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
                 || msgType == MsgTypeEnum.VIDEO.type
                 || msgType == MsgTypeEnum.VOICE.type
         ) {
+
+            // 此处为mq异步解耦，保存信息到数据库，数据库无法获得信息的主键i
+            // 所以此处可以用snowflake直接生成唯一的主键id
+            Snowflake snowflake = new Snowflake(new IdWorkerConfigBean());
+            String sid = snowflake.nextId();
+            System.out.println("sid = " + sid);
+
+            String iid = IdWorker.getIdStr();
+            System.out.println("iid = " + iid);
+
+            chatMsg.setMsgId(sid);
+
             // 发送消息
             List<Channel> receiverChannels = UserChannelSession.getMultiChannels(receiverId);
             if (receiverChannels == null || receiverChannels.isEmpty()) {
@@ -127,6 +143,10 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
                 );
             }
         }
+
+        // 把聊天信息作为mq的消息发送给消费者进行消费处理（保存到数据库）
+        System.out.println("🔹 正在向 MQ 发送消息：" + JsonUtils.objectToJson(chatMsg));
+        MessagePublisher.sendMsgToSave(chatMsg);
 
         UserChannelSession.outputMulti();
 
