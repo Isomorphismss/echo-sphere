@@ -19,6 +19,12 @@
             <version>4.1.25.Final</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.a3test.component</groupId>
+            <artifactId>idworker-snowflake</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
     </dependencies>
 
 </project>
