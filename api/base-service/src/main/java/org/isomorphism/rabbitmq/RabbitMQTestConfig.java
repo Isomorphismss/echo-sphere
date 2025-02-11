@@ -20,6 +20,9 @@ public class RabbitMQTestConfig {
     // 具体的路由地址
     public static final String ROUTING_KEY_TEST_SEND = "echo.sphere.test.send";
 
+    // 发送信息到消息队列接受并且保存到数据库的路由地址
+    public static final String ROUTING_KEY_WECHAT_MSG_SEND = "echo.sphere.wechat.msg.send";
+
     // 创建交换机
     @Bean(TEST_EXCHANGE)
     public Exchange exchange() {
