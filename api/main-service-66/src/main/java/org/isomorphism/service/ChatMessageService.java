@@ -24,4 +24,10 @@ public interface ChatMessageService {
                                            Integer page,
                                            Integer pageSize);
 
+    /**
+     * 标记语音聊天信息的签收已读
+     * @param msgId
+     */
+   public void updateMsgSignRead(String msgId);
+
 }

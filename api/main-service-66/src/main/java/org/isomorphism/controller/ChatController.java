@@ -56,4 +56,10 @@ public class ChatController extends BaseInfoProperties {
         return GraceJSONResult.ok(gridResult);
     }
 
+    @PostMapping("signRead/{msgId}/")
+    public GraceJSONResult signRead(@PathVariable("msgId") String msgId) {
+        chatMessageService.updateMsgSignRead(msgId);
+        return GraceJSONResult.ok();
+    }
+
 }
