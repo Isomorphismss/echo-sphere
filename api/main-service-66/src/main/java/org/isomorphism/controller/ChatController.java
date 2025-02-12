@@ -14,7 +14,7 @@ public class ChatController extends BaseInfoProperties {
 
     // 127.0.0.1:77/a/hello
 
-    @PostMapping("getMyUnreadCounts")
+    @PostMapping("getMyUnReadCounts")
     public GraceJSONResult ok(String myId) {
 
         Map map = redis.hgetall(CHAT_MSG_LIST + ":" + myId);
