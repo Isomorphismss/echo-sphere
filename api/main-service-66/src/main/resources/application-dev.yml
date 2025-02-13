@@ -35,3 +35,12 @@ spring:
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASSWORD}
     virtual-host: ${RABBITMQ_VIRTUAL_HOST}
+
+zookeeper:
+  curator:
+    host: ${ZOO_URL}
+    connectionTimeoutMs: 30000
+    sessionTimeoutMs: 3000
+    sleepMsBetweenRetry: 2000
+    maxRetries: 3
+    namespace: ${ZOO_NAMESPACE}
