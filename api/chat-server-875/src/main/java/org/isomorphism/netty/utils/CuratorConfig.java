@@ -5,6 +5,7 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.data.Stat;
 
 public class CuratorConfig {
 
@@ -41,5 +42,15 @@ public class CuratorConfig {
     public static CuratorFramework getClient() {
         return client;
     }
+
+//    public static void main(String[] args) throws Exception {
+//        CuratorFramework zkClient = CuratorConfig.getClient();
+//        String path = "/hello";
+//        Stat stat = zkClient.checkExists().forPath(path);
+//
+//        String nodeData = new String(zkClient.getData().forPath(path));
+//
+//        System.out.println(nodeData);
+//    }
 
 }

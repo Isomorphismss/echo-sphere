@@ -1,5 +1,9 @@
 package org.isomorphism.test;
 
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.zookeeper.data.Stat;
+import org.isomorphism.netty.utils.CuratorConfig;
 import org.isomorphism.netty.utils.JedisPoolUtils;
 import org.junit.jupiter.api.Test;
 import redis.clients.jedis.Jedis;
@@ -24,6 +28,15 @@ public class MyTest {
     public void testGetNettyPort() {
         Integer nettyPort = selectPort(nettyDefaultPort);
         System.out.println(nettyPort);
+    }
+
+    @Test
+    public void testCurator() throws Exception {
+        CuratorFramework zkClient = CuratorConfig.getClient();
+        String path = "/abc";
+        Stat stat = zkClient.checkExists().forPath(path);
+
+        System.out.println(stat);
     }
 
     public static final Integer nettyDefaultPort = 875;  // 885 895 905 915 ...
