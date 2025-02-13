@@ -19,7 +19,7 @@ public class ZookeeperRegister {
         if (stat == null) {
             zkClient.create()
                     .creatingParentsIfNeeded()
-                    .withMode(CreateMode.EPHEMERAL_SEQUENTIAL)
+                    .withMode(CreateMode.PERSISTENT)
                     .forPath(path);
         } else {
             System.out.println(stat);
