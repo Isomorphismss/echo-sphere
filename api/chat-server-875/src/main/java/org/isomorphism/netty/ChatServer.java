@@ -69,6 +69,7 @@ public class ChatServer {
         // Netty服务启动的时候，从redis中查找有没有端口，如果没有，则使用875，如果有则端口累加10再启动
         Integer nettyPort = selectPort(nettyDefaultPort);
 
+        // 注册当前netty服务到zookeeper中
         ZookeeperRegister.registerNettyServer("server-list",
                 ZookeeperRegister.getLocalIp(),
                 nettyPort);
