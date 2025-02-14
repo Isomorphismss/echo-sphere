@@ -13,11 +13,15 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import org.isomorphism.enums.MsgTypeEnum;
 import org.isomorphism.grace.result.GraceJSONResult;
 import org.isomorphism.netty.mq.MessagePublisher;
+import org.isomorphism.netty.utils.JedisPoolUtils;
+import org.isomorphism.netty.utils.ZookeeperRegister;
 import org.isomorphism.pojo.netty.ChatMsg;
 import org.isomorphism.pojo.netty.DataContent;
+import org.isomorphism.pojo.netty.NettyServerNode;
 import org.isomorphism.utils.JsonUtils;
 import org.isomorphism.utils.LocalDateUtils;
 import org.isomorphism.utils.OkHttpUtil;
+import redis.clients.jedis.Jedis;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -79,6 +83,15 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
             // 当websocket初次open的时候，初始化channel，把channel和用户userid关联起来
             UserChannelSession.putMultiChannels(senderId, currentChannel);
             UserChannelSession.putUserChannelIdRelation(currentChannelId, senderId);
+
+            // 初次连接后，该节点下的在线人数累加
+            NettyServerNode minNode = dataContent.getServerNode();
+            ZookeeperRegister.incrementOnlineCounts(minNode);
+
+            // 获得ip和端口，在redis中设置关系，以便在前端设备断线后减少在线人数
+            Jedis jedis = JedisPoolUtils.getJedis();
+            jedis.set(senderId, JsonUtils.objectToJson(minNode));
+
         } else if (msgType == MsgTypeEnum.WORDS.type
                 || msgType == MsgTypeEnum.IMAGE.type
                 || msgType == MsgTypeEnum.VIDEO.type
@@ -189,6 +202,12 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         UserChannelSession.removeUselessChannels(userId, currentChannelId);
 
         clients.remove(currentChannel);
+
+        // zk中在线人数累减
+        Jedis jedis = JedisPoolUtils.getJedis();
+        NettyServerNode minNode = JsonUtils.jsonToPojo(jedis.get(userId),
+                                                        NettyServerNode.class);
+        ZookeeperRegister.decrementOnlineCounts(minNode);
     }
 
     /**
@@ -211,6 +230,12 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         // 移除多余的会话
         String userId = UserChannelSession.getUserIdByChannelId(currentChannelId);
         UserChannelSession.removeUselessChannels(userId, currentChannelId);
+
+        // zk中在线人数累减
+        Jedis jedis = JedisPoolUtils.getJedis();
+        NettyServerNode minNode = JsonUtils.jsonToPojo(jedis.get(userId),
+                NettyServerNode.class);
+        ZookeeperRegister.decrementOnlineCounts(minNode);
     }
 
 }
