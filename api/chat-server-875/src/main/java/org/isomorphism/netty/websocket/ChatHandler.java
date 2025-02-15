@@ -130,6 +130,10 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
                         String chatTimeFormat = LocalDateUtils
                                 .format(chatMsg.getChatTime(), LocalDateUtils.DATETIME_PATTERN_2);
                         dataContent.setChatTime(chatTimeFormat);
+
+                        // 使用扩展字段，填入当前需要被排除发送的channelId
+                        dataContent.setExtend(currentChannelId);
+
                         // 把聊天信息作为mq消息进行广播
                         MessagePublisher.sendMsgToNettyServers(JsonUtils.objectToJson(dataContent));
                         // 发送消息给在线的用户
