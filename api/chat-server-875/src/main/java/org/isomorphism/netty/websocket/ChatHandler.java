@@ -110,17 +110,17 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
             chatMsg.setMsgId(sid);
 
             // 发送消息
-            List<Channel> receiverChannels = UserChannelSession.getMultiChannels(receiverId);
-            if (receiverChannels == null || receiverChannels.isEmpty()) {
-                // receiverChannels为空，表示用户离线/断线状态，消息不需要发送，后续可以存储到数据库
-                chatMsg.setIsReceiverOnLine(false);
-            } else {
-                chatMsg.setIsReceiverOnLine(true);
+//            List<Channel> receiverChannels = UserChannelSession.getMultiChannels(receiverId);
+//            if (receiverChannels == null || receiverChannels.isEmpty()) {
+//                // receiverChannels为空，表示用户离线/断线状态，消息不需要发送，后续可以存储到数据库
+//                chatMsg.setIsReceiverOnLine(false);
+//            } else {
+//                chatMsg.setIsReceiverOnLine(true);
 
                 // 当receiverChannels不为空的时候，同账户多端设备接受消息
-                for (Channel c : receiverChannels) {
-                    Channel findChannel = clients.find(c.id());
-                    if (findChannel != null) {
+//                for (Channel c : receiverChannels) {
+//                    Channel findChannel = clients.find(c.id());
+//                    if (findChannel != null) {
 
                         if (msgType == MsgTypeEnum.VOICE.type) {
                             chatMsg.setIsRead(false);
@@ -130,35 +130,37 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
                         String chatTimeFormat = LocalDateUtils
                                 .format(chatMsg.getChatTime(), LocalDateUtils.DATETIME_PATTERN_2);
                         dataContent.setChatTime(chatTimeFormat);
+                        // 把聊天信息作为mq消息进行广播
+                        MessagePublisher.sendMsgToNettyServers(JsonUtils.objectToJson(dataContent));
                         // 发送消息给在线的用户
-                        findChannel.writeAndFlush(
-                                new TextWebSocketFrame(
-                                        JsonUtils.objectToJson(dataContent))
-                        );
-                    }
-                }
-            }
+//                        findChannel.writeAndFlush(
+//                                new TextWebSocketFrame(
+//                                        JsonUtils.objectToJson(dataContent))
+//                        );
+//                    }
+//                }
+//            }
 
             // 把聊天信息作为mq的消息发送给消费者进行消费处理（保存到数据库）
             MessagePublisher.sendMsgToSave(chatMsg);
         }
 
-        List<Channel> myOtherChannels = UserChannelSession
-                .getMyOtherChannels(senderId, currentChannelId);
-        for (Channel c : myOtherChannels) {
-            Channel findChannel = clients.find(c.id());
-            if (findChannel != null) {
-                dataContent.setChatMsg(chatMsg);
-                String chatTimeFormat = LocalDateUtils
-                        .format(chatMsg.getChatTime(), LocalDateUtils.DATETIME_PATTERN_2);
-                dataContent.setChatTime(chatTimeFormat);
-                // 同步消息给在线的其他设备端
-                findChannel.writeAndFlush(
-                        new TextWebSocketFrame(
-                                JsonUtils.objectToJson(dataContent))
-                );
-            }
-        }
+//        List<Channel> myOtherChannels = UserChannelSession
+//                .getMyOtherChannels(senderId, currentChannelId);
+//        for (Channel c : myOtherChannels) {
+//            Channel findChannel = clients.find(c.id());
+//            if (findChannel != null) {
+//                dataContent.setChatMsg(chatMsg);
+//                String chatTimeFormat = LocalDateUtils
+//                        .format(chatMsg.getChatTime(), LocalDateUtils.DATETIME_PATTERN_2);
+//                dataContent.setChatTime(chatTimeFormat);
+//                // 同步消息给在线的其他设备端
+//                findChannel.writeAndFlush(
+//                        new TextWebSocketFrame(
+//                                JsonUtils.objectToJson(dataContent))
+//                );
+//            }
+//        }
 
 //        // 把聊天信息作为mq的消息发送给消费者进行消费处理（保存到数据库）
 //        System.out.println("🔹 正在向 MQ 发送消息：" + JsonUtils.objectToJson(chatMsg));
