@@ -1,6 +1,7 @@
 package org.isomorphism.netty.utils;
 
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 import org.isomorphism.pojo.netty.NettyServerNode;
@@ -71,22 +72,32 @@ public class ZookeeperRegister {
     public static void dealOnlineCounts(NettyServerNode serverNode,
                                         Integer counts) throws Exception {
         CuratorFramework zkClient = CuratorConfig.getClient();
-        String path = "/server-list";
-        List<String> list = zkClient.getChildren().forPath(path);
 
-        for (String node : list) {
-            String nodePath = path + "/" + node;
-            String nodeValue = new String(zkClient.getData().forPath(nodePath));
+        InterProcessReadWriteLock readWriteLock =
+                new InterProcessReadWriteLock(zkClient, "/rw-lock");
 
-            NettyServerNode pendingNode = JsonUtils.jsonToPojo(nodeValue,
-                                                                NettyServerNode.class);
-            if ((pendingNode.getIp().equals(serverNode.getIp())) &&
-                    (pendingNode.getPort().intValue() == serverNode.getPort().intValue())
-            ) {
-                pendingNode.setOnlineCounts(pendingNode.getOnlineCounts() + counts);
-                String nodeJson = JsonUtils.objectToJson(pendingNode);
-                zkClient.setData().forPath(nodePath, nodeJson.getBytes());
+        readWriteLock.writeLock().acquire();
+
+        try {
+            String path = "/server-list";
+            List<String> list = zkClient.getChildren().forPath(path);
+
+            for (String node : list) {
+                String nodePath = path + "/" + node;
+                String nodeValue = new String(zkClient.getData().forPath(nodePath));
+
+                NettyServerNode pendingNode = JsonUtils.jsonToPojo(nodeValue,
+                                                                    NettyServerNode.class);
+                if ((pendingNode.getIp().equals(serverNode.getIp())) &&
+                        (pendingNode.getPort().intValue() == serverNode.getPort().intValue())
+                ) {
+                    pendingNode.setOnlineCounts(pendingNode.getOnlineCounts() + counts);
+                    String nodeJson = JsonUtils.objectToJson(pendingNode);
+                    zkClient.setData().forPath(nodePath, nodeJson.getBytes());
+                }
             }
+        } finally {
+            readWriteLock.writeLock().release();
         }
 
     }
