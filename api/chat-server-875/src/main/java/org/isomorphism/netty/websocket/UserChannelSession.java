@@ -1,6 +1,12 @@
 package org.isomorphism.netty.websocket;
 
 import io.netty.channel.Channel;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import org.isomorphism.enums.MsgTypeEnum;
+import org.isomorphism.pojo.netty.DataContent;
+import org.isomorphism.utils.JsonUtils;
+import org.isomorphism.utils.LocalDateUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,6 +96,24 @@ public class UserChannelSession {
         }
 
         System.out.println("+++++++++++++++");
+    }
+
+    public static void sendToTarget(List<Channel> receiverChannels, DataContent dataContent) {
+
+        ChannelGroup clients = ChatHandler.clients;
+
+        if (receiverChannels == null || receiverChannels.isEmpty()) {
+            return;
+        }
+
+        for (Channel c : receiverChannels) {
+            Channel findChannel = clients.find(c.id());
+            if (findChannel != null) {
+                findChannel.writeAndFlush(
+                        new TextWebSocketFrame(
+                                JsonUtils.objectToJson(dataContent)));
+            }
+        }
     }
 
 }
