@@ -134,7 +134,9 @@ public class RabbitMQConnectUtils {
                 String exchange = envelope.getExchange();
                 if (exchange.equalsIgnoreCase(exchangeName)) {
                     String msg = new String(body);
+                    System.out.println("==================MQ 消费者监听 start==================");
                     System.out.println(msg);
+                    System.out.println("==================MQ 消费者监听 end==================");
                 }
             }
         };
