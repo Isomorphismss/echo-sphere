@@ -1,5 +1,6 @@
 package org.isomorphism.zk;
 
+import jakarta.annotation.Resource;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
@@ -10,6 +11,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.isomorphism.pojo.netty.NettyServerNode;
 import org.isomorphism.utils.JsonUtils;
 import org.isomorphism.utils.RedisOperator;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -59,6 +61,9 @@ public class CuratorConfig {
     @Autowired
     private RedisOperator redis;
 
+    @Resource
+    private RabbitAdmin rabbitAdmin;
+
     /**
      * 注册节点的事件监听
      * @param path
@@ -102,9 +107,14 @@ public class CuratorConfig {
                     System.out.println("old path = " + oldData.getPath());
                     System.out.println("old value = " + oldNode);
 
+                    // 移除残留端口
                     String oldPort = oldNode.getPort() + "";
                     String portKey = "netty_port";
                     redis.hdel(portKey, oldPort);
+
+                    // 移除残留消息队列
+                    String queueName = "netty_queue_" + oldPort;
+                    rabbitAdmin.deleteQueue(queueName);
 
                     break;
                 default:
