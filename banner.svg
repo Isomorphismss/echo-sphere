@@ -1,0 +1,28 @@
+<svg width="500" height="100" viewBox="50 0 500 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8A2BE2" />
+      <stop offset="100%" stop-color="#4B0082" />
+    </linearGradient>
+  </defs>
+
+  <rect width="500" height="100" fill="url(#bgGradient)" />
+
+  <path d="M0,70 C125,110 375,10 500,70 L500,100 L0,100 Z" fill="#ffffff" opacity="0.25" />
+  <path d="M0,60 C125,100 375,0 500,60 L500,100 L0,100 Z" fill="#ffffff" opacity="0.25" />
+
+  <text
+    x="50%"
+    y="50%"
+    dominant-baseline="middle"
+    text-anchor="middle"
+    font-family="'Brush Script MT', cursive"
+    font-size="52px"
+    font-weight="bold"
+    stroke="#000000"
+    stroke-width="0.3"
+    fill="white"
+  >
+    EchoSphere
+  </text>
+</svg>
