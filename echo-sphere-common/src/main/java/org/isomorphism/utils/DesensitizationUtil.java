@@ -14,9 +14,9 @@ public class DesensitizationUtil {
     private static final String SYMBOL = "*";
 
     public static void main(String[] args) {
-        String name = commonDisplay("Isomorphism网");
+        String name = commonDisplay("Isomorphisms");
         String mobile = commonDisplay("13900000000");
-        String mail = commonDisplay("admin@Isomorphism.com");
+        String mail = commonDisplay("Iso@isomorphisms.com");
         String address = commonDisplay("北京大运河东路888号");
 
         System.out.println(name);

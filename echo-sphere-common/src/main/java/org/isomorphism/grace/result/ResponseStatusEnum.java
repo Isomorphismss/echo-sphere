@@ -28,8 +28,6 @@ public enum ResponseStatusEnum {
     USER_INACTIVE_ERROR(509,false,"请前往[账号设置]修改信息激活后再进行后续操作！"),
     USER_INFO_UPDATED_ERROR(5091,false,"用户信息修改失败！"),
     USER_INFO_UPDATED_NICKNAME_EXIST_ERROR(5092,false,"昵称已经存在！"),
-    USER_INFO_UPDATED_ISOMORPHISMNUM_EXIST_ERROR(5092,false,"Isomorphism号已经存在！"),
-    USER_INFO_CANT_UPDATED_ISOMORPHISMNUM_ERROR(5092,false,"Isomorphism号无法修改！"),
     FILE_UPLOAD_NULL_ERROR(510,false,"文件不能为空，请选择一个文件再上传！"),
     FILE_UPLOAD_FAILD(511,false,"文件上传失败！"),
     FILE_FORMATTER_FAILD(512,false,"文件图片格式不支持！"),
