@@ -97,7 +97,7 @@ By default, **the chat server runs in cluster mode**. You can:
 - Adjust the **number of Netty servers** dynamically in cluster mode.
 
 ### 5️⃣ Running the Frontend
-To experience the full functionality of EchoSphere, you need to start the frontend. Navigate to [frontend repo](https://github.com/Isomorphismss/echo-sphere-uniapp) and follow the instructions in the readme.
+To experience the full functionality of EchoSphere, you need to start the frontend. Navigate to the [frontend repo](https://github.com/Isomorphismss/echo-sphere-uniapp) and follow the instructions in the readme.
 
 ### ⚠️ Troubleshooting
 - If `start.sh` does not **automatically create database tables**, please contact me for the SQL schema.
