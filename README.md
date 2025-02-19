@@ -2,52 +2,45 @@
 
 ![EchoSphere Banner](https://raw.githubusercontent.com/Isomorphismss/echo-sphere/refs/heads/main/banner.svg)
 
-## Introduction
-**EchoSphere** is a distributed, real-time messaging platform designed for high concurrency and scalability. It supports **one-on-one messaging, group chat, social feeds, and a drifting bottle feature**, offering a seamless communication experience across multiple devices.
+## 🌟 Introduction
+EchoSphere is a next-generation **real-time chat system**, designed for seamless communication across multiple devices.  
+It supports **one-on-one messaging, group chats, social feeds, and a drifting bottle feature**, bringing a unique social experience to users.
 
-Built on a **microservices architecture**, EchoSphere leverages **Spring Cloud Alibaba**, **Netty**, and **RabbitMQ** to ensure efficient message delivery, while **Redis**, **MinIO**, and **Elasticsearch** provide a robust backend for caching, media storage, and real-time search.
+With its **high-performance backend** and **cloud-based microservice architecture**, EchoSphere ensures reliable and fast message delivery, even under heavy traffic.
 
 ## ✨ Features
-- 🔐 **Secure Authentication**: Phone number login with **AWS**, JWT-based distributed session management.
-- 🚀 **High-Performance Messaging**:
-    - One-on-one chat: **Netty clusters** + **RabbitMQ (routing mode)**
-    - Group chat: **RabbitMQ (broadcast mode)**
-    - **Offline messaging** stored in a queue until the user reconnects.
-- 💾 **Distributed Storage**:
-    - **MinIO** for storing media files (profile pictures, images, voice messages).
-    - **Redis** for real-time caching and session management.
-- 🔄 **Service Discovery & Routing**:
-    - **Nacos** for service registration & configuration.
-    - **Spring Cloud Gateway + Redis** for API routing & rate limiting.
-- 🛡️ **Resilience & Monitoring**:
-    - **SkyWalking** for distributed tracing & performance analysis.
-    - **Sentinel** for circuit breaking & rate limiting.
-- 🔗 **Netty Cluster Management**:
-    - **Zookeeper** for tracking server status & user distribution.
-    - **Curator** for distributed read/write locks.
-    - **Redis** for dynamic Netty port allocation.
-- 📍 **Geo-Search & Social Features**:
-    - **Elasticsearch** for **geo-based search** (used in the drifting bottle feature).
-    - **Redis + Caffeine** for social feed likes.
-    - **Google ZXing** to generate user QR codes.
 
-## 🛠️ Tech Stack
-| Category        | Technology |
-|----------------|------------|
-| Backend        | Spring Cloud Alibaba, Spring Boot, Netty, RabbitMQ |
-| Storage        | MySQL, Redis, MinIO, Elasticsearch |
-| API Gateway    | Spring Cloud Gateway |
-| Service Discovery | Nacos |
-| Monitoring     | SkyWalking, Sentinel |
-| Cluster Management | Zookeeper, Curator |
-| Frontend       | Vue, Uni-APP |
-| Authentication | JWT, Tencent Cloud SMS SDK |
-| Caching        | Redis, Caffeine |
-| Messaging Queue | RabbitMQ |
+- 🔐 **Secure Authentication**
+    - Register and log in using a **phone number** and **secure authentication system**.
+    - Supports session management for seamless cross-device access.
 
-## 🚀 Running Guide
+- 📩 **Real-Time Messaging**
+    - **One-on-one chats** with real-time message delivery.
+    - **Group chats** for easy communication with friends and teams.
+    - **Offline messaging** ensures you never miss important messages.
+
+- 🌍 **Drifting Bottle - A Geo-Based Feature**
+    - Send anonymous messages as a "drifting bottle" into the world.
+    - Discover and interact with bottles from users **near your location**.
+
+- ❤️ **Social Feed (Moments)**
+    - Share updates, images, and thoughts with your friends.
+    - Like and comment on posts, creating an engaging social experience.
+
+- 🏷️ **QR Code Friend Search**
+    - Easily add friends by scanning their unique **QR codes**.
+
+- ⚡ **High Performance & Scalability**
+    - Built for **high concurrency**, supporting thousands of active users.
+    - **Smart message routing** ensures optimized delivery.
+    - **Geo-based search** makes discovery easier.
+
+[//]: # (![Chat Screenshot]&#40;https://raw.githubusercontent.com/Isomorphismss/echo-sphere/main/screenshots/chat.png&#41;  )
+
+## 🚀 Getting Started
+
 ### 1️⃣ Prerequisites
-Ensure you have the following installed and configured:
+To run EchoSphere, ensure you have the following installed:
 - **JDK 17+**
 - **MySQL 8+**
 - **Redis**
@@ -57,7 +50,7 @@ Ensure you have the following installed and configured:
 - **Elasticsearch**
 - **Zookeeper**
 
-Make sure **environment variables** are correctly set, including database connection credentials, Redis configurations, and other service authentication details.
+> ⚠️ Make sure environment variables are correctly set for database connections and authentication.
 
 ### 2️⃣ Clone the Repository
 ```bash
@@ -65,8 +58,8 @@ git clone https://github.com/Isomorphismss/echo-sphere.git
 cd echo-sphere
 ```
 
-### 3️⃣ Start Services
-Start the required services in the following order:
+### 3️⃣ Start Required Services
+Make sure all dependent services are running:
 ```bash
 # Start Nacos
 sh startup.sh -m standalone
@@ -88,22 +81,17 @@ zkServer.sh start
 ```
 
 ### 4️⃣ Start the Chat Server
-After starting all required services, launch the chat server:
+After all services are ready, launch the backend:
 ```bash
 sh start.sh
 ```
-By default, **the chat server runs in cluster mode**. You can:
-- Switch to **single-instance mode** based on the configuration.
-- Adjust the **number of Netty servers** dynamically in cluster mode.
+**By default, the server runs in cluster mode.**  
+You can configure it to **single-instance mode** if needed.
 
 ### 5️⃣ Running the Frontend
-To experience the full functionality of EchoSphere, you need to start the frontend. Navigate to the [frontend repo](https://github.com/Isomorphismss/echo-sphere-uniapp) and follow the instructions in the readme.
+To access EchoSphere, start the frontend application. Follow the instructions in the frontend repository:  
+🔗 [Frontend Repository](https://github.com/Isomorphismss/echo-sphere-uniapp)
 
-### ⚠️ Troubleshooting
-- If `start.sh` does not **automatically create database tables**, please contact me for the SQL schema.
-- Ensure **all service connections (database, Redis, MinIO, etc.) are correctly configured in the environment variables**.
 
-## License
+## 📜 License
 This project is licensed under the **MIT License**.
-
-
